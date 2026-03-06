@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Website</title>
+
+<style>
+
+/* Body */
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#0f1117;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* Card */
+.card{
+  background:linear-gradient(135deg,#1a1e37,#2c3147);
+  color: whitesmoke;
+  padding:30px;
+  border-radius:20px;
+  width:350px;
+  height:70%;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+  font-family: "Lucida Console", "Courier New", monospace;
+  box-shadow: 0 0 5px #00ffcc,
+  0 0 6px #00ffcc,
+  0 0 6px #00ffcc,
+  0 0 6px #00ffcc;
+
+  border:1px solid #0d2a24;
+}
+
+/* Navbar container */
+.navbar-container{
+  display:flex;
+  justify-content:center;
+}
+
+/* Search bar */
+.search-bar{
+  display:flex;
+  align-items:center;
+  width:100%;
+  background:#222533;
+  padding:10px 15px;
+  border-radius:30px;
+  border:1px solid #2a2b33;
+  transition:0.5s;
+}
+
+/* Focus effect */
+.search-bar:focus-within{
+  border-color:#00ff99;
+}
+
+/* Input container */
+.InputContainer{
+  display:flex;
+  align-items:center;
+  width:100%;
+  gap:10px;
+}
+
+/* Search input */
+.input{
+  flex:1;
+  border:none;
+  outline:none;
+  font-size:16px;
+  background:none;
+  color:#c39898;
+}
+
+/* Placeholder */
+.input::placeholder{
+  color:#8a8a8a;
+}
+
+/* Search icon */
+.searchIcon{
+  width:20px;
+  height:20px;
+  fill:#8a8a8a;
+  transition:0.2s;
+  cursor:pointer;
+}
+
+/* Icon green on focus */
+.search-bar:focus-within .searchIcon{
+  fill:#00ff99;
+}
+
+/* Weather */
+.weather{
+margin-top:30px;
+}
+
+.weather-icon{
+width:120px;
+margin-top:20px;
+}
+
+/* Details */
+.temp{
+font-size:40px;
+font-weight:200;
+}
+
+.city{
+font-size:30px;
+margin-top:-20px;
+color: #00ffcc;
+font-family: cursive;
+}
+
+.details{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+margin-top:40px;
+}
+
+.col{
+display:flex;
+align-items:center;
+text-align:left;
+}
+
+.col img{
+width:40px;
+margin-right:10px;
+margin-top: -25px;
+}
+
+.humidity,.wind{
+font-size:18px;
+margin-top:-20px;
+padding: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="navbar-container">
+<div class="search-bar">
+<div class="InputContainer">
+
+<svg class="searchIcon" viewBox="0 0 24 24" onclick="checkWeather()">
+<path fill="none" d="M0 0h24v24H0z"></path>
+<path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16
+c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5
+4.99L20.49 19l-4.99-5zm-6 0C7.01 14
+5 11.99 5 9.5S7.01 5 9.5 5 14
+7.01 14 9.5 11.99 14 9.5 14z"></path>
+</svg>
+
+<input class="input" id="search-input" type="text" placeholder="Enter City Name">
+
+</div>
+</div>
+</div>
+
+<div class="weather">
+<img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" class="weather-icon">
+</div>
+
+<h1 class="temp">0°C</h1>
+<h2 class="city">City</h2>
+<p class="description" style="color: yellow;"></p>
+
+<div class="details">
+
+<div class="col">
+<img src="https://cdn-icons-png.flaticon.com/512/728/728093.png">
+<div>
+<p class="humidity">50%</p>
+<p style="color: black;"><b>Humidity</b></p>
+</div>
+</div>
+
+<div class="col">
+<!--<img src="https://cdn-icons-png.flaticon.com/512/553/553416.png"> -->
+<img src="https://cdn-icons-png.flaticon.com/512/3741/3741046.png" alt="">
+<div>
+<p class="wind">15 km/h</p>
+<p style="color: black;"><b>Wind Speed</b></p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* OpenWeather API key */
+const apiKey="611e408504609c5262ec0959d5729f9f";
+
+/* Function to fetch weather */
+async function checkWeather(){
+
+const city=document.getElementById("search-input").value;
+
+const api=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+const response=await fetch(api);
+const data=await response.json();
+
+if(data.cod=="404"){
+alert("City not found");
+return;
+}
+
+/* City name */
+document.querySelector(".city").innerHTML=data.name;
+
+/* Temperature */
+document.querySelector(".temp").innerHTML=Math.round(data.main.temp)+"°C";
+
+/* Humidity */
+document.querySelector(".humidity").innerHTML=data.main.humidity+"%";
+
+/* Wind speed */
+document.querySelector(".wind").innerHTML=data.wind.speed+" km/h";
+
+/* Weather description */
+document.querySelector(".description").innerHTML=data.weather[0].description;
+
+/* Weather condition */
+const weatherMain=data.weather[0].main;
+
+/* Clear sky / clouds icons */
+let weatherImg="";
+
+if(weatherMain=="Clear"){
+weatherImg="https://cdn-icons-png.flaticon.com/512/869/869869.png";
+}
+else if(weatherMain=="Clouds"){
+weatherImg="https://cdn-icons-png.flaticon.com/512/414/414825.png";
+}
+else if(weatherMain=="Rain"){
+weatherImg="https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
+}
+else if(weatherMain=="Snow"){
+weatherImg="https://cdn-icons-png.flaticon.com/512/642/642102.png";
+}
+else{
+weatherImg=`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+}
+
+document.querySelector(".weather-icon").src=weatherImg;
+
+}
+
+</script>
+
+</body>
+</html>
